@@ -19,7 +19,6 @@ A [Telescope](https://github.com/nvim-telescope/telescope.nvim) extension that d
 | Display | Flat list | Hierarchical tree |
 | Grouping | None | By directory |
 | Directory visibility | Hidden in path | Explicit nodes |
-| Empty dir cleanup | N/A | Automatic |
 | Insert mode | Same view | Switches to flat for filtering |
 
 ## Requirements
