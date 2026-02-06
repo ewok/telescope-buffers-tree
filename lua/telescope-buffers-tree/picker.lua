@@ -98,6 +98,7 @@ function M.open(opts)
       finder = make_finder("tree"),
       default_selection_index = default_idx or 1,
       sorter = conf.generic_sorter(picker_opts),
+      previewer = cfg.previewer and conf.file_previewer(picker_opts) or nil,
       attach_mappings = function(prompt_bufnr, map)
         local picker = action_state.get_current_picker(prompt_bufnr)
         local style = "tree"
