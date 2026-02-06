@@ -1,0 +1,22 @@
+# Neovim
+*.swp
+*.swo
+*~
+tags
+
+# Lua
+*.luac
+lua_modules/
+.luarocks/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# Testing
+.tests/

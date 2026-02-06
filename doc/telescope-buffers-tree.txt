@@ -1,0 +1,269 @@
+*telescope-buffers-tree.txt*  Buffer picker with tree view for Telescope
+
+Author:   Your Name
+License:  MIT License
+Version:  1.0.0
+
+==============================================================================
+CONTENTS                                     *telescope-buffers-tree-contents*
+
+  1. Introduction .................... |telescope-buffers-tree-introduction|
+  2. Requirements .................... |telescope-buffers-tree-requirements|
+  3. Installation .................... |telescope-buffers-tree-installation|
+  4. Configuration ................... |telescope-buffers-tree-configuration|
+  5. Usage ........................... |telescope-buffers-tree-usage|
+  6. Mappings ........................ |telescope-buffers-tree-mappings|
+  7. API ............................. |telescope-buffers-tree-api|
+  8. Health Check .................... |telescope-buffers-tree-health|
+
+==============================================================================
+1. INTRODUCTION                          *telescope-buffers-tree-introduction*
+
+telescope-buffers-tree is a Telescope extension that displays open buffers
+in a hierarchical tree view, grouped by directory structure.
+
+Features:
+- Tree view with directory hierarchy and tree connectors
+- Smart filtering: switches to flat list in insert mode
+- Directory compression: collapses single-child directories
+- File icons via mini.icons (optional)
+- Diagnostic indicators next to files
+- Automatic current buffer selection
+- Buffer deletion with tree cleanup
+
+==============================================================================
+2. REQUIREMENTS                          *telescope-buffers-tree-requirements*
+
+- Neovim >= 0.9.0
+- telescope.nvim (https://github.com/nvim-telescope/telescope.nvim)
+- mini.icons (optional, https://github.com/echasnovski/mini.icons)
+
+==============================================================================
+3. INSTALLATION                          *telescope-buffers-tree-installation*
+
+Using lazy.nvim: >lua
+  {
+    "ewok/telescope-buffers-tree",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "echasnovski/mini.icons", -- optional
+    },
+    config = function()
+      require("telescope").load_extension("buffers_tree")
+    end,
+  }
+<
+
+Using packer.nvim: >lua
+  use {
+    "ewok/telescope-buffers-tree",
+    requires = {
+      "nvim-telescope/telescope.nvim",
+      "echasnovski/mini.icons", -- optional
+    },
+    config = function()
+      require("telescope").load_extension("buffers_tree")
+    end,
+  }
+<
+
+==============================================================================
+4. CONFIGURATION                        *telescope-buffers-tree-configuration*
+
+Configure via telescope.setup(): >lua
+  require("telescope").setup({
+    extensions = {
+      buffers_tree = {
+        theme = "dropdown",        -- "dropdown", "ivy", "cursor"
+        theme_opts = {},           -- options for theme function
+        initial_mode = "normal",   -- "normal" or "insert"
+        previewer = false,         -- show file previewer
+        switch_on_insert = true,   -- switch to flat in insert mode
+        action_close = true,       -- close after action
+        diagnostics = false,       -- show diagnostic icons
+        actions = {},              -- custom actions
+        mappings = { n = {}, i = {} },  -- custom mappings
+        on_folder_select = nil,    -- callback for directory selection
+      },
+    },
+  })
+  require("telescope").load_extension("buffers_tree")
+<
+
+                                              *telescope-buffers-tree.theme*
+theme ~
+  Type: `string` or `function`
+  Default: `"dropdown"`
+
+  Theme for the picker. Built-in options: "dropdown", "ivy", "cursor".
+  Can also be a custom theme function.
+
+                                         *telescope-buffers-tree.theme_opts*
+theme_opts ~
+  Type: `table`
+  Default: `{}`
+
+  Options passed to the theme function.
+
+                                       *telescope-buffers-tree.initial_mode*
+initial_mode ~
+  Type: `string`
+  Default: `"normal"`
+
+  Initial mode when picker opens. Options: "normal", "insert".
+
+                                          *telescope-buffers-tree.previewer*
+previewer ~
+  Type: `boolean`
+  Default: `false`
+
+  Whether to show the file previewer.
+
+                                    *telescope-buffers-tree.switch_on_insert*
+switch_on_insert ~
+  Type: `boolean`
+  Default: `true`
+
+  Automatically switch to flat list when entering insert mode.
+  Returns to tree view on leaving insert mode.
+
+                                       *telescope-buffers-tree.action_close*
+action_close ~
+  Type: `boolean`
+  Default: `true`
+
+  Close picker after executing a custom action.
+
+                                        *telescope-buffers-tree.diagnostics*
+diagnostics ~
+  Type: `boolean` or `table`
+  Default: `false`
+
+  Show diagnostic icons next to files.
+  - `false`: disabled
+  - `true`: enabled with default signs (E, W, I, H)
+  - `table`: custom signs configuration >lua
+    diagnostics = {
+      signs = {
+        error = { "", "DiagnosticError" },
+        warn = { "", "DiagnosticWarn" },
+        info = { "", "DiagnosticInfo" },
+        hint = { "", "DiagnosticHint" },
+      },
+    }
+<
+
+                                            *telescope-buffers-tree.actions*
+actions ~
+  Type: `table`
+  Default: `{}`
+
+  Custom key-action mappings for normal mode. >lua
+    actions = {
+      ["<C-v>"] = function(prompt_bufnr, entry)
+        vim.cmd("vsplit")
+        vim.api.nvim_set_current_buf(entry.bufnr)
+      end,
+    }
+<
+
+                                           *telescope-buffers-tree.mappings*
+mappings ~
+  Type: `table`
+  Default: `{ n = {}, i = {} }`
+
+  Custom telescope mappings. >lua
+    mappings = {
+      n = {
+        ["q"] = function(bufnr) require("telescope.actions").close(bufnr) end,
+      },
+      i = {},
+    }
+<
+
+                                     *telescope-buffers-tree.on_folder_select*
+on_folder_select ~
+  Type: `function` or `nil`
+  Default: `nil`
+
+  Callback when selecting a directory node. >lua
+    on_folder_select = function(path)
+      require("telescope").extensions.file_browser.file_browser({ path = path })
+    end
+<
+
+==============================================================================
+5. USAGE                                        *telescope-buffers-tree-usage*
+
+Command: >vim
+  :Telescope buffers_tree
+<
+
+Lua: >lua
+  require("telescope").extensions.buffers_tree.buffers_tree()
+
+  -- With options
+  require("telescope").extensions.buffers_tree.buffers_tree({
+    theme = "ivy",
+    diagnostics = true,
+  })
+<
+
+Suggested keymap: >lua
+  vim.keymap.set("n", "<leader>bb", function()
+    require("telescope").extensions.buffers_tree.buffers_tree()
+  end, { desc = "Buffer tree" })
+<
+
+==============================================================================
+6. MAPPINGS                                  *telescope-buffers-tree-mappings*
+
+Default mappings:
+
+  Mode   Key       Action ~
+  n      <CR>      Open selected buffer
+  n      dd        Delete buffer and rebuild tree
+  i      <C-d>     Delete buffer and rebuild tree
+
+All standard Telescope mappings are also available.
+
+View switching:
+- Insert mode: automatically switches to flat list for fuzzy filtering
+- Normal mode: returns to tree view
+
+==============================================================================
+7. API                                            *telescope-buffers-tree-api*
+
+                                           *telescope-buffers-tree.open()*
+buffers_tree.open({opts})
+  Open the buffer picker.
+
+  Parameters: ~
+    {opts}  (table|nil) Configuration options (overrides global config)
+
+  Usage: >lua
+    require("telescope-buffers-tree").open({ theme = "ivy" })
+<
+
+                                          *telescope-buffers-tree.setup()*
+buffers_tree.setup({opts})
+  Configure the extension. Usually called automatically via telescope.setup().
+
+  Parameters: ~
+    {opts}  (table|nil) Configuration options
+
+==============================================================================
+8. HEALTH CHECK                              *telescope-buffers-tree-health*
+
+Run the health check: >vim
+  :checkhealth telescope
+<
+
+This verifies:
+- Neovim version compatibility
+- telescope.nvim installation
+- mini.icons availability (optional)
+- Extension load status
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
