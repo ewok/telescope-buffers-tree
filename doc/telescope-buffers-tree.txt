@@ -187,6 +187,12 @@ on_folder_select ~
   Default: `nil`
 
   Callback when selecting a directory node. >lua
+    -- With Oil.nvim
+    on_folder_select = function(path)
+      require("oil").open(path)
+    end
+
+    -- With Telescope file_browser
     on_folder_select = function(path)
       require("telescope").extensions.file_browser.file_browser({ path = path })
     end

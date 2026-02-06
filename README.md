@@ -124,7 +124,11 @@ require("telescope").setup({
 
       -- Callback when selecting a directory node
       on_folder_select = nil,
-      -- Example: open directory in file browser
+      -- Example with Oil.nvim:
+      -- on_folder_select = function(path)
+      --   require("oil").open(path)
+      -- end,
+      -- Example with Telescope file_browser:
       -- on_folder_select = function(path)
       --   require("telescope").extensions.file_browser.file_browser({ path = path })
       -- end,
