@@ -2,7 +2,7 @@
 
 A [Telescope](https://github.com/nvim-telescope/telescope.nvim) extension that displays open buffers in a hierarchical tree view, grouped by directory structure.
 
-![Demo](https://img.shields.io/badge/demo-placeholder-blue?style=flat-square)
+![telescope-buffers-tree](telescope-buffers-tree.png)
 
 ## Features
 
